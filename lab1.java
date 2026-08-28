@@ -4,8 +4,8 @@ import java.io.IOException;
 
 public class lab1{
 	public static void main(String[] args){
-		if(args == null){
-			System.out.println("Usage: java WeatherAnalyzer \"filename\"");
+		if(args.length != 1){
+			System.err.println("Usage: java lab1 <filename>");
 		}
 		String filename = args[0];
 		String[][] data = readCSV(filename);
@@ -14,6 +14,9 @@ public class lab1{
 				System.out.print(col + ",");
 			}
 		}
+		double[] values = extractNumericColumn(data,2);
+		displayStatistics(values,data[0][1]);
+
 
 		
 
@@ -31,11 +34,11 @@ public class lab1{
 			arrayReader = new BufferedReader(new FileReader(filename));
 			String line;
 
-			String testLine;
+			String arrayLine;
 
-			while((testLine = arrayReader.readLine()) != null){ // goes through data to figure out how big to make 2d array.
+			while((arrayLine = arrayReader.readLine()) != null){ // goes through data to figure out how big to make 2d array.
 				row++;
-				String[] lineContents = testLine.split(",");
+				String[] lineContents = arrayLine.split(",");
 				col = lineContents.length; 
 			}
 			
@@ -62,12 +65,41 @@ public class lab1{
 		return lines;
 	}
 
-	public static float extractNumericColumn(String[][] data, int columnIndex){
-		return -1;
+	public static double[] extractNumericColumn(String[][] data, int columnIndex){
+		int realValues =0;
+		for(int i = 0; i<data.length;i++){ // checks for real values in column
+			try{
+				Double.parseDouble(data[i][columnIndex-1]);
+				realValues++;
+			}catch(NumberFormatException e){
+				System.out.println("Skipping column: " + i);
+				continue;
+			}
+		}
 
+		double[] values = new double[realValues];
+		int index = 0;
+		for(int i = 0; i<data.length;i++){ // enters real values into values
+			try{
+				values[index] = Double.parseDouble(data[i][columnIndex-1]);
+				index++;
+			}catch(NumberFormatException e){
+
+			}
+		}
+		return values;
 	}
 
 	public static void displayStatistics(double[] values, String columnName){
+		double total = 0.0;
+		double average = 0.0;
+		for(double value : values){
+			total += value;
+			System.out.println(value);
+		}
+		average = total/values.length;
+		System.out.println(columnName);
+		System.out.printf("%5.1f\n",average);
 
 	}
 	
