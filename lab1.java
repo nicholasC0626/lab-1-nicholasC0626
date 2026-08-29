@@ -1,6 +1,7 @@
 import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.Scanner;
 
 public class lab1{
 	public static void main(String[] args){
@@ -9,14 +10,28 @@ public class lab1{
 		}
 		String filename = args[0];
 		String[][] data = readCSV(filename);
-		for(String[] row : data){
-			for(String col : row){
-				System.out.print(col + ",");
+		Scanner scanner = new Scanner(System.in);
+		for(int i = 1; i<data[0].length; i++){
+			System.out.print(data[0][i] + "|");
+		}
+		System.out.print("\n"+"What column would you like to select from the CSV file? ");
+		String columnName = scanner.nextLine();
+		
+
+
+
+		int indexOfColumnName = 0;
+		for(int i = 0; i<data[0].length; i++){
+			if(!data[0][i].equalsIgnoreCase(columnName)){
+				continue;
+			}else{
+			indexOfColumnName = i;
+			System.out.println(indexOfColumnName);
 			}
 		}
-		double[] values = extractNumericColumn(data,2);
-		displayStatistics(values,data[0][1]);
 
+		double[] values = extractNumericColumn(data,indexOfColumnName);
+		displayStatistics(values,columnName);
 
 		
 
@@ -69,10 +84,10 @@ public class lab1{
 		int realValues =0;
 		for(int i = 0; i<data.length;i++){ // checks for real values in column
 			try{
-				Double.parseDouble(data[i][columnIndex-1]);
+				Double.parseDouble(data[i][columnIndex]);
 				realValues++;
 			}catch(NumberFormatException e){
-				System.out.println("Skipping column: " + i);
+				System.out.println("Skipping column due to invalid data: " + i);
 				continue;
 			}
 		}
@@ -81,7 +96,7 @@ public class lab1{
 		int index = 0;
 		for(int i = 0; i<data.length;i++){ // enters real values into values
 			try{
-				values[index] = Double.parseDouble(data[i][columnIndex-1]);
+				values[index] = Double.parseDouble(data[i][columnIndex]);
 				index++;
 			}catch(NumberFormatException e){
 
@@ -93,14 +108,55 @@ public class lab1{
 	public static void displayStatistics(double[] values, String columnName){
 		double total = 0.0;
 		double average = 0.0;
-		for(double value : values){
+		for(double value : values){ // calculates average value
 			total += value;
 			System.out.println(value);
 		}
 		average = total/values.length;
-		System.out.println(columnName);
-		System.out.printf("%5.1f\n",average);
+		System.out.println("--------------\n" + columnName + "\n--------------");
+		System.out.println("Total data points processed: " + values.length);
+		System.out.print("Average " + columnName + ": ");
+		formatType(columnName,average);
 
+		double max = Double.NEGATIVE_INFINITY; // calculates max value
+		for(int i = 0; i<values.length; i++){
+			if(values[i]>max){
+				max = values[i];
+			}
+		}
+
+		double min = Double.POSITIVE_INFINITY; // calculates min value
+		for(int i = 0; i<values.length; i++){
+			if(values[i]<min){
+				min = values[i];
+			}
+		}
+		System.out.print("Max " + columnName + ": ");
+		//System.out.printf("%5.1f\n",max);
+		formatType(columnName,max);
+		System.out.print("Min " + columnName + ": ");
+		//System.out.printf("%5.1f\n",min);
+		formatType(columnName,min);
+
+
+
+	}
+	public static void formatType(String columnName,double value){
+		if(columnName.contains("Temp")){
+			if(columnName.contains("F")){
+				System.out.printf("%5.1f°F\n",value);
+			}else if(columnName.contains("C")){
+				System.out.printf("%5.1f°C\n",value);
+			}
+		}else if(columnName.contains("Humidity")){
+			System.out.printf("%5.1f%%\n",value);			
+		}else if(columnName.contains("MPH")){
+			System.out.printf("%5.1fmph\n",value);
+		}else if(columnName.contains("IN")){
+			System.out.printf("%5.2fin\n",value);
+		}else{
+			System.out.printf("%5.1f\n",value);			
+		}
 	}
 	
 }
