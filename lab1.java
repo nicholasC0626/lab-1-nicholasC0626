@@ -2,6 +2,7 @@ import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Scanner;
+import java.util.Arrays;
 
 public class lab1{
 	public static void main(String[] args){
@@ -14,23 +15,27 @@ public class lab1{
 		for(int i = 1; i<data[0].length; i++){
 			System.out.print(data[0][i] + "|");
 		}
-		System.out.print("\n"+"What column would you like to select from the CSV file? ");
-		String columnName = scanner.nextLine();
-		
 
+		//System.out.print("\n"+"What column would you like to select from the CSV file? ");
+		//String columnName = scanner.nextLine();
 
-
-		int indexOfColumnName = 0;
-		for(int i = 0; i<data[0].length; i++){
-			if(!data[0][i].equalsIgnoreCase(columnName)){
-				continue;
-			}else{
-			indexOfColumnName = i;
-			System.out.println(indexOfColumnName);
+		String columnName = "";
+		int indexOfColumnName = -1;
+		while(indexOfColumnName == -1){
+			System.out.print("\n"+"What column would you like to select from the CSV file? ");
+			columnName = scanner.nextLine();
+			for(int i = 0; i<data[0].length; i++){
+				if(!data[0][i].equalsIgnoreCase(columnName)){
+					continue;
+				}else{
+					indexOfColumnName = i;
+					//System.out.println(indexOfColumnName);
+				}
 			}
 		}
 
 		double[] values = extractNumericColumn(data,indexOfColumnName);
+		Arrays.sort(values);
 		displayStatistics(values,columnName);
 
 		
@@ -131,17 +136,41 @@ public class lab1{
 				min = values[i];
 			}
 		}
+
+		double median = 0.0;
+		//1,2,3,4
+		if(values.length%2 == 0){
+			median = (values[values.length/2] + values[(values.length/2) -1])/2;
+		}else{
+			median = values[(values.length/2) + 1];
+		}
+
+		double stdDeviation = 0.0;
+		double squaredDiff = 0.0;
+		for(double value : values){
+			double x = value - average;
+			squaredDiff += Math.pow(x,2);
+		}
+		stdDeviation = Math.sqrt(squaredDiff/values.length);
+		System.out.println(stdDeviation);
+
+
+
 		System.out.print("Max " + columnName + ": ");
 		//System.out.printf("%5.1f\n",max);
 		formatType(columnName,max);
 		System.out.print("Min " + columnName + ": ");
 		//System.out.printf("%5.1f\n",min);
 		formatType(columnName,min);
+		System.out.print("Median " + columnName + ": ");
+		formatType(columnName,median);
+		System.out.print("Standard Deviation from the mean of " + columnName + ": ");
+		formatType(columnName,stdDeviation);
 
 
 
 	}
-	public static void formatType(String columnName,double value){
+	public static void formatType(String columnName,double value){ // checks how to format data and prints data
 		if(columnName.contains("Temp")){
 			if(columnName.contains("F")){
 				System.out.printf("%5.1f°F\n",value);
