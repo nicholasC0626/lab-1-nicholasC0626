@@ -16,9 +16,6 @@ public class lab1{
 			System.out.print(data[0][i] + "|");
 		}
 
-		//System.out.print("\n"+"What column would you like to select from the CSV file? ");
-		//String columnName = scanner.nextLine();
-
 		String columnName = "";
 		int indexOfColumnName = -1;
 		while(indexOfColumnName == -1){
@@ -115,13 +112,13 @@ public class lab1{
 		double average = 0.0;
 		for(double value : values){ // calculates average value
 			total += value;
-			System.out.println(value);
+			//System.out.println(value);
 		}
 		average = total/values.length;
 		System.out.println("--------------\n" + columnName + "\n--------------");
 		System.out.println("Total data points processed: " + values.length);
 		System.out.print("Average " + columnName + ": ");
-		formatType(columnName,average);
+		formatStat(columnName,average);
 
 		double max = Double.NEGATIVE_INFINITY; // calculates max value
 		for(int i = 0; i<values.length; i++){
@@ -152,20 +149,18 @@ public class lab1{
 			squaredDiff += Math.pow(x,2);
 		}
 		stdDeviation = Math.sqrt(squaredDiff/values.length);
-		System.out.println(stdDeviation);
+	
 
 
 
 		System.out.print("Max " + columnName + ": ");
-		//System.out.printf("%5.1f\n",max);
 		formatType(columnName,max);
 		System.out.print("Min " + columnName + ": ");
-		//System.out.printf("%5.1f\n",min);
 		formatType(columnName,min);
 		System.out.print("Median " + columnName + ": ");
-		formatType(columnName,median);
+		formatStat(columnName,median);
 		System.out.print("Standard Deviation from the mean of " + columnName + ": ");
-		formatType(columnName,stdDeviation);
+		formatStat(columnName,stdDeviation);
 
 
 
@@ -185,6 +180,23 @@ public class lab1{
 			System.out.printf("%5.2fin\n",value);
 		}else{
 			System.out.printf("%5.1f\n",value);			
+		}
+	}
+	public static void formatStat(String columnName,double value){ // checks how to format data and prints stats
+		if(columnName.contains("Temp")){
+			if(columnName.contains("F")){
+				System.out.printf("%5.2f°F\n",value);
+			}else if(columnName.contains("C")){
+				System.out.printf("%5.2f°C\n",value);
+			}
+		}else if(columnName.contains("Humidity")){
+			System.out.printf("%5.2f%%\n",value);			
+		}else if(columnName.contains("MPH")){
+			System.out.printf("%5.2fmph\n",value);
+		}else if(columnName.contains("IN")){
+			System.out.printf("%5.3fin\n",value);
+		}else{
+			System.out.printf("%5.2f\n",value);			
 		}
 	}
 	
