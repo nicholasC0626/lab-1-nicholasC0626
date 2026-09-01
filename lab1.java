@@ -68,6 +68,7 @@ public class lab1{
 			}
 		}catch(IOException e){
 			System.err.println("Error reading file: " + e.getMessage());
+			System.exit(1);
 		}finally{
 			if(reader != null || arrayReader != null){
 				try{
